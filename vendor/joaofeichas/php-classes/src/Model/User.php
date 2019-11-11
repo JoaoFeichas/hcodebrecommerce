@@ -64,4 +64,80 @@ class User extends Model
     {
         $_SESSION[User::SESSION] = NULL;
     }
+
+    public static function listAll()
+    {
+        $sql = new Sql();
+
+        return $sql->select("SELECT * FROM tb_users INNER JOIN tb_persons USING (idperson) ORDER BY tb_persons.desperson");
+    }
+
+    public function save()
+    {
+        $sql = new Sql();
+
+        /*
+            pdesperson VARCHAR(64),
+            pdeslogin VARCHAR(64),
+            pdespassword VARCHAR(256),
+            pdesemail VARCHAR(128),
+            pnrphone BIGINT,
+            pinadmin TINYINT
+        */
+        $results = $sql->select("CALL sp_users_save(:DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
+           ':DESPERSON' => $this->getdesperson(),
+            ':DESLOGIN' => $this->getdeslogin(),
+            ':DESPASSWORD' => $this->getdespassword(),
+            ':DESEMAIL' => $this->getdesemail(),
+            ':NRPHONE' => $this->getnrphone(),
+            ':INADMIN' => $this->getinadmin()
+        ));
+
+        $this->setData($results[0]);
+    }
+
+    public function get($iduser)
+    {
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_users INNER JOIN tb_persons USING(idperson) WHERE tb_users.iduser = :IDUSER", array(
+            ":IDUSER" => $iduser
+        ));
+
+        $this->setData($results[0]);
+    }
+
+    public function update()
+    {
+        $sql = new Sql();
+
+        /*
+            pdesperson VARCHAR(64),
+            pdeslogin VARCHAR(64),
+            pdespassword VARCHAR(256),
+            pdesemail VARCHAR(128),
+            pnrphone BIGINT,
+            pinadmin TINYINT
+        */
+        $results = $sql->select("CALL sp_usersupdate_save(:IDUSER, :DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
+            ':IDUSER' => $this->getiduser(),
+           ':DESPERSON' => $this->getdesperson(),
+            ':DESLOGIN' => $this->getdeslogin(),
+            ':DESPASSWORD' => $this->getdespassword(),
+            ':DESEMAIL' => $this->getdesemail(),
+            ':NRPHONE' => $this->getnrphone(),
+            ':INADMIN' => $this->getinadmin()
+        ));
+
+        $this->setData($results[0]);
+    }
+
+    public function delete()
+    {
+        $sql = new Sql();
+
+        $sql->query("CALL sp_users_delete(:IDUSER)", array(
+            ":IDUSER" => $this->getiduser()
+        ));
+    }
 }
