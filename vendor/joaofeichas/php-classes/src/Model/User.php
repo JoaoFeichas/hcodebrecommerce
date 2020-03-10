@@ -225,13 +225,13 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
         ));
     }
 
-    public static function setPassword($password)
+    public function setPassword($password)
     {
         $sql = new Sql();
 
         $sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
-            ":password" => $password,
-            ":iduser" => $this->getiduser();
-        ))
+            ':password' => $password,
+            ':iduser' => $this->getiduser()
+        ));
     }
 }
