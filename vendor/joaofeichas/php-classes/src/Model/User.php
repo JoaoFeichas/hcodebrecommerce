@@ -39,13 +39,6 @@ class User extends Model
         }
     }
 
-    public function setData($data = array())
-    {
-        foreach ($data as $key => $value) {
-            $this->{"set" . $key}($value);
-        }
-    }
-
     public static function verifyLogin($inadmin = true)
     {
         if (
@@ -53,9 +46,9 @@ class User extends Model
             ||
             !$_SESSION[User::SESSION]
             ||
-            !(int)$_SESSION[User::SESSION]["iduser"] > 0
+            !(int) $_SESSION[User::SESSION]["iduser"] > 0
             ||
-            (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
+            (bool) $_SESSION[User::SESSION]["inadmin"] !== $inadmin
         ) {
             header("Location: /admin/login");
             exit;
@@ -87,7 +80,7 @@ class User extends Model
             pinadmin TINYINT
         */
         $results = $sql->select("CALL sp_users_save(:DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
-           ':DESPERSON' => $this->getdesperson(),
+            ':DESPERSON' => $this->getdesperson(),
             ':DESLOGIN' => $this->getdeslogin(),
             ':DESPASSWORD' => $this->getdespassword(),
             ':DESEMAIL' => $this->getdesemail(),
@@ -123,7 +116,7 @@ class User extends Model
         */
         $results = $sql->select("CALL sp_usersupdate_save(:IDUSER, :DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
             ':IDUSER' => $this->getiduser(),
-           ':DESPERSON' => $this->getdesperson(),
+            ':DESPERSON' => $this->getdesperson(),
             ':DESLOGIN' => $this->getdeslogin(),
             ':DESPASSWORD' => $this->getdespassword(),
             ':DESEMAIL' => $this->getdesemail(),
@@ -160,7 +153,7 @@ class User extends Model
             throw new Exception("Não foi possível recuperar a senha.");
         } else {
             $data = $results[0];
-            
+
             $resultsRecovery = $sql->select("CALL sp_userspasswordsrecoveries_create(:IDUSER, :DESIP)", array(
                 ':IDUSER' => $data["iduser"],
                 ':DESIP' => $_SERVER["REMOTE_ADDR"]
@@ -213,7 +206,6 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
         } else {
             return $results[0];
         }
-
     }
 
     public static function setForgotUsed($idrecovery)
