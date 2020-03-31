@@ -4,7 +4,6 @@ namespace JoaoFeichas\Model;
 
 use Exception;
 use JoaoFeichas\DB\Sql;
-use JoaoFeichas\Mailer;
 use JoaoFeichas\Model;
 
 class Category extends Model
