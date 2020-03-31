@@ -7,8 +7,8 @@ use Rain\Tpl;
 
 class Mailer
 {
-    const USERNAME = "joao.select@gmail.com";
-    const PASSWORD = "JoaoeIsabelleHRtQ";
+    const USERNAME = "support@localhost.com";
+    const PASSWORD = "Support";
     const NAME_FROM = "Joao Feichas Store";
 
     private $mail;
@@ -16,8 +16,8 @@ class Mailer
     public function __construct($toAddress, $toName, $subject, $tplName, $data = array())
     {
         $config = array(
-            "tpl_dir" => $_SERVER["DOCUMENT_ROOT"]."views/email/",
-            "cache_dir" => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
+            "tpl_dir" => $_SERVER["DOCUMENT_ROOT"] . "/views/email/",
+            "cache_dir" => $_SERVER["DOCUMENT_ROOT"] . "/views-cache/",
             "debug" => false
         );
 
@@ -35,8 +35,8 @@ class Mailer
         $this->mail->isSMTP();
         $this->mail->SMTPDebug = 2;
         $this->mail->Debugoutput = 'html';
-        $this->mail->Host = 'smpt.gmail.com';
-        $this->mail->Port = 587;
+        $this->mail->Host = '127.0.0.1';
+        $this->mail->Port = 25;
         $this->mail->SMTPSecure = 'tls';
         $this->mail->SMTPAuth = true;
         $this->mail->Username = Mailer::USERNAME;

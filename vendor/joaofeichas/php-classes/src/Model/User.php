@@ -11,6 +11,7 @@ class User extends Model
 {
     const SESSION = "User";
     const SECRET = "HcodePhp7_Secret";
+    const CIPHER = "AES256";
 
     public static function login($login, $password)
     {
@@ -164,7 +165,12 @@ class User extends Model
             } else {
                 $dataRecovey = $resultsRecovery[0];
 
-                $code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, User::SECRET, $dataRecovey["idrecovery"], MCRYPT_MODE_ECB));
+                $ivlen = openssl_cipher_iv_length(User::CIPHER);
+                $iv = openssl_random_pseudo_bytes($ivlen);
+
+                // mcrypt is deprecated on PHP 7.x
+                // $code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, User::SECRET, $dataRecovey["idrecovery"], MCRYPT_MODE_ECB));
+                $code = base64_encode(openssl_encrypt($dataRecovey["idrecovery"], "AES256", User::SECRET, OPENSSL_RAW_DATA, $iv));
 
                 $link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
 
