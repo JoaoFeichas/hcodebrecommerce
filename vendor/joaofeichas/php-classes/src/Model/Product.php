@@ -75,18 +75,18 @@ class Product extends Model
     {
         if (file_exists(
             $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
-            "res" . DIRECTORY_SEPARATOR .
-            "site" . DIRECTORY_SEPARATOR .
-            "img" . DIRECTORY_SEPARATOR .
-            "products" . DIRECTORY_SEPARATOR .
-            $this->getidproduct() . ".jpg"
-         )) {
-             $url =  "/res/site/img/products/" . $this->getidproduct() . ".jpg";
-         } else {
+                "res" . DIRECTORY_SEPARATOR .
+                "site" . DIRECTORY_SEPARATOR .
+                "img" . DIRECTORY_SEPARATOR .
+                "products" . DIRECTORY_SEPARATOR .
+                $this->getidproduct() . ".jpg"
+        )) {
+            $url =  "/res/site/img/products/" . $this->getidproduct() . ".jpg";
+        } else {
             $url = "/res/site/img/product.jpg";
-         }
+        }
 
-         return $this->setdesphoto($url);
+        return $this->setdesphoto($url);
     }
 
     public function getValues()
@@ -98,37 +98,37 @@ class Product extends Model
         return $values;
     }
 
-public function setPhoto($file)
-{
-    $extension = explode('.', $file['name']);
-    $extension = end($extension);
+    public function setPhoto($file)
+    {
+        $extension = explode('.', $file['name']);
+        $extension = end($extension);
 
-    switch ($extension) {
-        case 'jpg':
-        case 'jpeg':
-            $image = imagecreatefromjpeg($file["tmp_name"]);
-            break;
-        case 'gif':
-            $image = imagecreatefromgif($file["tmp_name"]);
-        break;
-        case 'png':
-            $image = imagecreatefrompng($file["tmp_name"]);
-        break;
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                $image = imagecreatefromjpeg($file["tmp_name"]);
+                break;
+            case 'gif':
+                $image = imagecreatefromgif($file["tmp_name"]);
+                break;
+            case 'png':
+                $image = imagecreatefrompng($file["tmp_name"]);
+                break;
+        }
+
+        $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
+            "res" . DIRECTORY_SEPARATOR .
+            "site" . DIRECTORY_SEPARATOR .
+            "img" . DIRECTORY_SEPARATOR .
+            "products" . DIRECTORY_SEPARATOR .
+            $this->getidproduct() . ".jpg";
+
+        imagejpeg($image, $dist);
+
+        imagedestroy($image);
+
+        $this->checkPhoto();
     }
-
-    $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
-    "res" . DIRECTORY_SEPARATOR .
-    "site" . DIRECTORY_SEPARATOR .
-    "img" . DIRECTORY_SEPARATOR .
-    "products" . DIRECTORY_SEPARATOR .
-    $this->getidproduct() . ".jpg";
-
-    imagejpeg($image, $dist);
-
-    imagedestroy($image);
-
-    $this->checkPhoto();
-}
 
     public static function updateFile()
     {
@@ -141,5 +141,29 @@ public function setPhoto($file)
         }
 
         file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html));
+    }
+
+    public function getFromURL($desurl)
+    {
+        $sql = new Sql();
+
+        $rows = $sql->select("SELECT * FROM tb_products WHERE desurl = :desurl LIMIT 1", [
+            ':desurl' => $desurl
+        ]);
+
+        $this->setData($rows[0]);
+    }
+
+    public function getCategories()
+    {
+        $sql = new Sql();
+
+        return $sql->select("
+            SELECT * FROM tb_categories c
+            INNER JOIN tb_productscategories pc ON c.idcategory = pc.idcategory
+            WHERE pc.idproduct = :idproduct
+        ", [
+            ':idproduct' => $this->getidproduct()
+        ]);
     }
 }
