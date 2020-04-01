@@ -34,7 +34,7 @@
               data-product_sku=""
               data-product_id="70"
               rel="nofollow"
-              href="/canvas/shop/?add-to-cart=70"
+              href="/cart/<?php echo htmlspecialchars( $value1["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/add"
               >Add to cart</a
             >
           </div>
