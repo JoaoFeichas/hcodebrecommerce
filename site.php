@@ -76,7 +76,7 @@ $app->get("/cart/:idproduct/add", function ($idproduct) {
     $qtd = (isset($_GET['qtd'])) ? (int) $_GET['qtd'] : 1;
 
     for ($i = 0; $i < $qtd; $i++) {
-        $cart->removeProduct($product);
+        $cart->addProduct($product);
     }
 
     header("Location: /cart");
