@@ -56,10 +56,11 @@
         </form>
       </div>
       <div class="col-md-6">
+        {if="$errorRegister != ''"}
         <div class="alert alert-danger">
-          Error!
+          {$errorRegister}
         </div>
-
+        {/if}
         <form
           id="register-form-wrap"
           action="/register"
@@ -76,7 +77,7 @@
               id="nome"
               name="name"
               class="input-text"
-              value=""
+              value="{$registerValues.name}"
             />
           </p>
           <p class="form-row form-row-first">
@@ -86,7 +87,7 @@
               id="email"
               name="email"
               class="input-text"
-              value=""
+              value="{$registerValues.email}"
             />
           </p>
           <p class="form-row form-row-first">
@@ -96,7 +97,7 @@
               id="phone"
               name="phone"
               class="input-text"
-              value=""
+              value="{$registerValues.phone}"
             />
           </p>
           <p class="form-row form-row-last">

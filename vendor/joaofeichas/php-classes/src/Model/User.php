@@ -117,8 +117,7 @@ class User extends Model
             // ':DESPERSON' => utf8_decode($this->getdesperson()),
             ':DESPERSON' => $this->getdesperson(),
             ':DESLOGIN' => $this->getdeslogin(),
-            // ':DESPASSWORD' => User::getPasswordHash($this->getdespassword()),
-            ':DESPASSWORD' => $this->getdespassword(),
+            ':DESPASSWORD' => User::getPasswordHash($this->getdespassword()),
             ':DESEMAIL' => $this->getdesemail(),
             ':NRPHONE' => $this->getnrphone(),
             ':INADMIN' => $this->getinadmin()
@@ -290,6 +289,25 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
     public static function clearError()
     {
         $_SESSION[User::ERROR] = NULL;
+    }
+
+    public static function setErrorRegister($msg)
+    {
+        $_SESSION[User::ERROR_REGISTER] = $msg;
+    }
+
+    public static function getErrorRegister()
+    {
+        $msg = (isset($_SESSION[User::ERROR_REGISTER])) && $_SESSION[User::ERROR_REGISTER] ? $_SESSION[User::ERROR_REGISTER] : '';
+
+        User::clearErrorRegister();
+
+        return $msg;
+    }
+
+    public static function clearErrorRegister()
+    {
+        $_SESSION[User::ERROR_REGISTER] = NULL;
     }
 
     public static function checkLoginExist($login)
