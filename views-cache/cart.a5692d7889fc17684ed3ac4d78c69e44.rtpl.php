@@ -19,9 +19,13 @@
         <div class="product-content-right">
           <div class="woocommerce">
             <form action="/checkout">
+              <?php if( $error != '' ){ ?>
+
               <div class="alert alert-danger" role="alert">
-                Error!
+                <?php echo htmlspecialchars( $error, ENT_COMPAT, 'UTF-8', FALSE ); ?>
+
               </div>
+              <?php } ?>
 
               <table cellspacing="0" class="shop_table cart">
                 <thead>
@@ -66,7 +70,7 @@
 
                     <td class="product-price">
                       <span class="amount"
-                        >R$ <?php echo htmlspecialchars( $value1["vlprice"], ENT_COMPAT, 'UTF-8', FALSE ); ?>)"}</span
+                        >R$ <?php echo formatPrice($value1["vlprice"]); ?></span
                       >
                     </td>
 
@@ -98,7 +102,7 @@
 
                     <td class="product-subtotal">
                       <span class="amount"
-                        >R$ <?php echo htmlspecialchars( $value1["vltotal"], ENT_COMPAT, 'UTF-8', FALSE ); ?>)"}</span
+                        >R$ <?php echo formatPrice($value1["vltotal"]); ?></span
                       >
                     </td>
                   </tr>
@@ -116,7 +120,7 @@
                     <input
                       type="text"
                       placeholder="00000-000"
-                      value=""
+                      value="<?php echo htmlspecialchars( $cart["deszipcode"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"
                       id="cep"
                       class="input-text"
                       name="zipcode"
@@ -131,25 +135,40 @@
                   </div>
                 </div>
 
-                <div class="cart_totals ">
+                <div class="cart_totals">
                   <h2>Resumo da Compra</h2>
 
                   <table cellspacing="0">
                     <tbody>
                       <tr class="cart-subtotal">
                         <th>Subtotal</th>
-                        <td><span class="amount">$700.00</span></td>
+                        <td>
+                          <span class="amount"
+                            >R$ <?php echo formatPrice($cart["vlsubtotal"]); ?></span
+                          >
+                        </td>
                       </tr>
 
                       <tr class="shipping">
                         <th>Frete</th>
-                        <td>$5.00 <small>prazo de 0 dia(s)</small></td>
+                        <td>
+                          R$ <?php echo formatPrice($cart["vlfreight"]); ?>
+
+                          <?php if( $cart["nrdays"] > 0 ){ ?>
+
+                          <small> prazo de <?php echo htmlspecialchars( $cart["nrdays"], ENT_COMPAT, 'UTF-8', FALSE ); ?> dia(s)</small><?php } ?>
+
+                        </td>
                       </tr>
 
                       <tr class="order-total">
                         <th>Total</th>
                         <td>
-                          <strong><span class="amount">$705.00</span></strong>
+                          <strong
+                            ><span class="amount"
+                              >R$ <?php echo formatPrice($cart["vltotal"]); ?></span
+                            ></strong
+                          >
                         </td>
                       </tr>
                     </tbody>
