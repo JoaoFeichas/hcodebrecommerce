@@ -10,6 +10,8 @@ use JoaoFeichas\Model;
 class User extends Model
 {
     const SESSION = "User";
+    const ERROR = "UserError";
+    const ERROR_REGISTER = "UserErrorRegister";
     const SECRET = "HcodePhp7_Secret";
     const CIPHER = "AES256";
 
@@ -49,7 +51,7 @@ class User extends Model
     {
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+        $results = $sql->select("SELECT * FROM tb_users u INNER JOIN tb_persons p ON u.idperson = p.idperson WHERE u.deslogin = :LOGIN", array(
             ':LOGIN' => $login
         ));
 
@@ -61,6 +63,9 @@ class User extends Model
 
         if (password_verify($password, $data["despassword"]) === true) {
             $user = new User();
+
+            // $data['desperson'] = utf8_encode($data['desperson']);
+            $data['desperson'] = $data['desperson'];
 
             $user->setData($data);
 
@@ -74,8 +79,12 @@ class User extends Model
 
     public static function verifyLogin($inadmin = true)
     {
-        if (User::checkLogin($inadmin)) {
-            header("Location: /admin/login");
+        if (!User::checkLogin($inadmin)) {
+            if ($inadmin) {
+                header("Location: /admin/login");
+            } else {
+                header("Location: /login");
+            }
             exit;
         }
     }
@@ -105,8 +114,10 @@ class User extends Model
             pinadmin TINYINT
         */
         $results = $sql->select("CALL sp_users_save(:DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
+            // ':DESPERSON' => utf8_decode($this->getdesperson()),
             ':DESPERSON' => $this->getdesperson(),
             ':DESLOGIN' => $this->getdeslogin(),
+            // ':DESPASSWORD' => User::getPasswordHash($this->getdespassword()),
             ':DESPASSWORD' => $this->getdespassword(),
             ':DESEMAIL' => $this->getdesemail(),
             ':NRPHONE' => $this->getnrphone(),
@@ -141,8 +152,10 @@ class User extends Model
         */
         $results = $sql->select("CALL sp_usersupdate_save(:IDUSER, :DESPERSON, :DESLOGIN, :DESPASSWORD, :DESEMAIL, :NRPHONE, :INADMIN)", array(
             ':IDUSER' => $this->getiduser(),
+            // ':DESPERSON' => utf8_decode($this->getdesperson()),
             ':DESPERSON' => $this->getdesperson(),
             ':DESLOGIN' => $this->getdeslogin(),
+            // ':DESPASSWORD' => User::getPasswordHash($this->getdespassword()),
             ':DESPASSWORD' => $this->getdespassword(),
             ':DESEMAIL' => $this->getdesemail(),
             ':NRPHONE' => $this->getnrphone(),
@@ -212,8 +225,11 @@ class User extends Model
 
     public static function validForgotDecrypt($code)
     {
+        $ivlen = openssl_cipher_iv_length(User::CIPHER);
+        $iv = openssl_random_pseudo_bytes($ivlen);
 
-        $idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, User::SECRET, base64_decode($code), MCRYPT_MODE_CBC);
+        // $idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, User::SECRET, base64_decode($code), MCRYPT_MODE_CBC);
+        $idrecovery = openssl_encrypt(base64_decode($code), "AES256", User::SECRET, OPENSSL_RAW_DATA, $iv);
 
         $sql = new Sql();
 
@@ -255,5 +271,42 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
             ':password' => $password,
             ':iduser' => $this->getiduser()
         ));
+    }
+
+    public static function setError($msg)
+    {
+        $_SESSION[User::ERROR] = $msg;
+    }
+
+    public static function getError()
+    {
+        $msg = (isset($_SESSION[User::ERROR])) && $_SESSION[User::ERROR] ? $_SESSION[User::ERROR] : '';
+
+        User::clearError();
+
+        return $msg;
+    }
+
+    public static function clearError()
+    {
+        $_SESSION[User::ERROR] = NULL;
+    }
+
+    public static function checkLoginExist($login)
+    {
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+            ':deslogin' => $login
+        ]);
+
+        return (count($results) > 0);
+    }
+
+    public static function getPasswordHash($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT, [
+            'cost' => 12
+        ]);
     }
 }
