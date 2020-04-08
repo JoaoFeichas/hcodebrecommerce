@@ -12,8 +12,9 @@ class User extends Model
     const SESSION = "User";
     const ERROR = "UserError";
     const ERROR_REGISTER = "UserErrorRegister";
+
+    const ENCRYPT_METHOD = "AES-256-CBC";
     const SECRET = "HcodePhp7_Secret";
-    const CIPHER = "AES256";
 
     public static function getFromSession()
     {
@@ -173,7 +174,7 @@ class User extends Model
         ));
     }
 
-    public static function getForgot($email)
+    public static function getForgot($email, $inadmin = true)
     {
         $sql = new Sql();
 
@@ -201,14 +202,15 @@ class User extends Model
             } else {
                 $dataRecovey = $resultsRecovery[0];
 
-                $ivlen = openssl_cipher_iv_length(User::CIPHER);
-                $iv = openssl_random_pseudo_bytes($ivlen);
-
                 // mcrypt is deprecated on PHP 7.x
                 // $code = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, User::SECRET, $dataRecovey["idrecovery"], MCRYPT_MODE_ECB));
-                $code = base64_encode(openssl_encrypt($dataRecovey["idrecovery"], "AES256", User::SECRET, OPENSSL_RAW_DATA, $iv));
+                $code = base64_encode(openssl_encrypt($dataRecovey["idrecovery"], User::ENCRYPT_METHOD, User::SECRET, OPENSSL_RAW_DATA, substr(hash('sha256', User::SECRET), 0, 16)));
 
-                $link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
+                if ($inadmin === true) {
+                    $link = "http://www.hcodecommerce.com.br/admin/forgot/reset?code=$code";
+                } else {
+                    $link = "http://www.hcodecommerce.com.br/forgot/reset?code=$code";
+                }
 
                 $mailer = new Mailer($data["desemail"], $data["desperson"], "Redefinir Senha da Hcode Store", "forgot", array(
                     "name" => $data["desperson"],
@@ -224,11 +226,8 @@ class User extends Model
 
     public static function validForgotDecrypt($code)
     {
-        $ivlen = openssl_cipher_iv_length(User::CIPHER);
-        $iv = openssl_random_pseudo_bytes($ivlen);
-
         // $idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, User::SECRET, base64_decode($code), MCRYPT_MODE_CBC);
-        $idrecovery = openssl_encrypt(base64_decode($code), "AES256", User::SECRET, OPENSSL_RAW_DATA, $iv);
+        $idrecovery = openssl_decrypt(base64_decode($code), User::ENCRYPT_METHOD, User::SECRET, OPENSSL_RAW_DATA, substr(hash('sha256', User::SECRET), 0, 16));
 
         $sql = new Sql();
 

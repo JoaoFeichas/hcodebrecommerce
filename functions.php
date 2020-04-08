@@ -2,9 +2,11 @@
 
 use JoaoFeichas\Model\User;
 
-function formatPrice(float $price)
+function formatPrice($vlprice)
 {
-    return number_format($price, 2, ',', '.');
+    if (!$vlprice > 0) $vlprice = 0;
+
+    return number_format($vlprice, 2, ',', '.');
 }
 
 function checkLogin($inadmin = true)
