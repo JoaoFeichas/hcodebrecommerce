@@ -12,6 +12,7 @@ class User extends Model
     const SESSION = "User";
     const ERROR = "UserError";
     const ERROR_REGISTER = "UserErrorRegister";
+    const SUCCESS = "UserSuccess";
 
     const ENCRYPT_METHOD = "AES-256-CBC";
     const SECRET = "HcodePhp7_Secret";
@@ -288,6 +289,25 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
     public static function clearError()
     {
         $_SESSION[User::ERROR] = NULL;
+    }
+
+    public static function setSuccess($msg)
+    {
+        $_SESSION[User::SUCCESS] = $msg;
+    }
+
+    public static function getSuccess()
+    {
+        $msg = (isset($_SESSION[User::SUCCESS])) && $_SESSION[User::SUCCESS] ? $_SESSION[User::SUCCESS] : '';
+
+        User::clearSuccess();
+
+        return $msg;
+    }
+
+    public static function clearSuccess()
+    {
+        $_SESSION[User::SUCCESS] = NULL;
     }
 
     public static function setErrorRegister($msg)
