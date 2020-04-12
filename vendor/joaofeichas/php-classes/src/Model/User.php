@@ -53,7 +53,10 @@ class User extends Model
     {
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_users u INNER JOIN tb_persons p ON u.idperson = p.idperson WHERE u.deslogin = :LOGIN", array(
+        $results = $sql->select("SELECT *
+        FROM tb_users u
+        INNER JOIN tb_persons p ON u.idperson = p.idperson
+        WHERE u.deslogin = :LOGIN", array(
             ':LOGIN' => $login
         ));
 
@@ -100,7 +103,10 @@ class User extends Model
     {
         $sql = new Sql();
 
-        return $sql->select("SELECT * FROM tb_users INNER JOIN tb_persons USING (idperson) ORDER BY tb_persons.desperson");
+        return $sql->select("SELECT *
+        FROM tb_users u
+        INNER JOIN tb_persons p USING (idperson)
+        ORDER BY tb_persons.desperson");
     }
 
     public function save()
@@ -132,7 +138,10 @@ class User extends Model
     {
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_users INNER JOIN tb_persons USING(idperson) WHERE tb_users.iduser = :IDUSER", array(
+        $results = $sql->select("SELECT *
+        FROM tb_users u
+        INNER JOIN tb_persons p ON u.idperson = p.idperson
+        WHERE tb_users.iduser = :IDUSER", array(
             ":IDUSER" => $iduser
         ));
 
@@ -179,8 +188,7 @@ class User extends Model
     {
         $sql = new Sql();
 
-        $results = $sql->select("
-        SELECT *
+        $results = $sql->select("SELECT *
         FROM tb_persons
         INNER JOIN tb_users USING(idperson)
         WHERE tb_persons.desemail = :EMAIL;
@@ -232,16 +240,12 @@ class User extends Model
 
         $sql = new Sql();
 
-        $results = $sql->select("
-SELECT * FROM tb_userspasswordsrecoveries
-INNER JOIN tb_users USING (iduser)
-INNER JOIN tb_persons USING (idperson)
-WHERE
-tb_userspasswordsrecoveries.idrecovery = :idrecovery
-AND
-tb_userspasswordsrecoveries.dtrecovery IS NULL
-AND
-DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();  
+        $results = $sql->select("SELECT * FROM tb_userspasswordsrecoveries
+        INNER JOIN tb_users USING (iduser)
+        INNER JOIN tb_persons USING (idperson)
+        WHERE tb_userspasswordsrecoveries.idrecovery = :idrecovery
+        AND tb_userspasswordsrecoveries.dtrecovery IS NULL
+        AND DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();  
         ", array(
             ":idrecovery" => $idrecovery
         ));
@@ -257,7 +261,9 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
     {
         $sql = new Sql();
 
-        $sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery = :idrecovery", array(
+        $sql->query("UPDATE tb_userspasswordsrecoveries
+        SET dtrecovery = NOW()
+        WHERE idrecovery = :idrecovery", array(
             ":idrecovery" => $idrecovery
         ));
     }
@@ -266,7 +272,9 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
     {
         $sql = new Sql();
 
-        $sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
+        $sql->query("UPDATE tb_users
+        SET despassword = :password
+        WHERE iduser = :iduser", array(
             ':password' => $password,
             ':iduser' => $this->getiduser()
         ));
@@ -333,7 +341,9 @@ DATE_ADD(tb_userspasswordsrecoveries.dtregister, INTERVAL 1 HOUR) >= NOW();
     {
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+        $results = $sql->select("SELECT *
+        FROM tb_users u
+        WHERE deslogin = :deslogin", [
             ':deslogin' => $login
         ]);
 
