@@ -35,7 +35,8 @@ class Order extends Model
         INNER JOIN tb_carts c ON o.idcart = c.idcart
         INNER JOIN tb_users u ON o.iduser = u.iduser
         INNER JOIN tb_addresses a ON u.idperson = a.idperson
-        WHERE idorder = :idorder", [
+        WHERE o.idorder = :idorder
+        GROUP BY o.idorder", [
             ':idorder' => $idorder
         ]);
 

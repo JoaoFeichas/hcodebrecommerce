@@ -356,4 +356,22 @@ class User extends Model
             'cost' => 12
         ]);
     }
+
+    public function getOrders()
+    {
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT *
+        FROM tb_orders o
+        INNER JOIN tb_ordersstatus os ON o.idstatus = os.idstatus
+        INNER JOIN tb_carts c ON o.idcart = c.idcart
+        INNER JOIN tb_users u ON o.iduser = u.iduser
+        INNER JOIN tb_addresses a ON u.idperson = a.idperson
+        WHERE o.iduser = :iduser
+        GROUP BY o.idorder", [
+            ':iduser' => $this->getiduser()
+        ]);
+
+        return $results;
+    }
 }
