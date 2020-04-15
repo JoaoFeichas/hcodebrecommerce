@@ -22,7 +22,7 @@ $app->get("/admin/categories", function () {
 
     for ($i = 0; $i < $pagination['pages']; $i++) {
         array_push($pages, [
-            'href' => '/admin/categpries?' . http_build_query([
+            'href' => '/admin/categories?' . http_build_query([
                 'page' => $i + 1,
                 'search' => $search
             ]),

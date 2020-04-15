@@ -68,3 +68,4 @@ Template usado no projeto [Almsaeed Studio](https://almsaeedstudio.com)
 
 127. Admin - Categorias Paginação e Busca
 
+128. Admin - Produtos Paginação e Busca
