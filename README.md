@@ -77,3 +77,8 @@ Template usado no projeto [Almsaeed Studio](https://almsaeedstudio.com)
 131. Registro e Hospedagem
 
 132. Ajuste na tabela de Endereços - Adicionando um campo para o número
+
+133. Integração com PagSeguro
+
+134. Integração com PayPal - Formulário HTML
+
