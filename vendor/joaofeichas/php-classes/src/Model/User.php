@@ -141,7 +141,7 @@ class User extends Model
         $results = $sql->select("SELECT *
         FROM tb_users u
         INNER JOIN tb_persons p ON u.idperson = p.idperson
-        WHERE tb_users.iduser = :IDUSER", array(
+        WHERE u.iduser = :IDUSER", array(
             ":IDUSER" => $iduser
         ));
 

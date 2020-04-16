@@ -71,3 +71,5 @@ Template usado no projeto [Almsaeed Studio](https://almsaeedstudio.com)
 128. Admin - Produtos Paginação e Busca
 
 129. Admin - Pedidos Paginação e Busca
+
+130. Admin - Usuários Ajustes
