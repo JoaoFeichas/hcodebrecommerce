@@ -73,3 +73,7 @@ Template usado no projeto [Almsaeed Studio](https://almsaeedstudio.com)
 129. Admin - Pedidos Paginação e Busca
 
 130. Admin - Usuários Ajustes
+
+131. Registro e Hospedagem
+
+132. Ajuste na tabela de Endereços - Adicionando um campo para o número
